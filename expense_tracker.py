@@ -48,7 +48,16 @@ def update_expense(id: str, description: str = None, amount: int = None):
     save_expense(expenses)
     print(f"Expense updated successfully (ID: {id})")
 
-# def list_expenses():
+def list_expenses():
+    expenses = load_expenses()
+    print("ID".ljust(5) + "Date".ljust(15) + "Description".ljust(20) + "Amount".ljust(10))
+    for expense in expenses:
+        print(
+            str(expense["ID"]).ljust(5) +
+            expense["Date"].ljust(15) +
+            expense["Description"].ljust(20) +
+            str(expense["Amount"]).ljust(10)
+        )
 
 # def expense_summary():
 
@@ -83,6 +92,11 @@ if __name__ == "__main__":
     delete_parser = subparsers.add_parser("delete")
     delete_parser.add_argument("--id", type=int, required=True)
 
+    # list subcommand
+    list_parser = subparsers.add_parser("list")
+    list_parser.add_argument("--year", type=int, required=False)
+    list_parser.add_argument("--month", type=int, required=False)
+
     # parse
     args = parser.parse_args()
     if args.command == "add":
@@ -91,3 +105,5 @@ if __name__ == "__main__":
         update_expense(args.id, args.description, args.amount)
     elif args.command == "delete":
         delete_expense(args.id)
+    elif args.command == "list":
+        list_expenses()
