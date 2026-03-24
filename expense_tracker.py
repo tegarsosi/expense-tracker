@@ -1,3 +1,4 @@
+import argparse
 import json
 from datetime import datetime
 
@@ -31,8 +32,62 @@ def add_expense(description: str, amount: int):
     save_expense(expenses)
     print(f"Expense added successfully (ID: {id})")
 
-def list_expenses():
+def update_expense(id: str, description: str = None, amount: int = None):
+    expenses = load_expenses()
+    for expense in expenses:
+        if expense["ID"] == int(id):
+            if description:
+                expense["Description"] = description
+            if amount:
+                expense["Amount"] = amount
+            expense["Date"] = datetime.now().strftime("%Y-%m-%d")
+            break
+    else:
+        print(f"Expense not found (ID: {id})")
+        return
+    save_expense(expenses)
+    print(f"Expense updated successfully (ID: {id})")
 
-def expense_summary():
+# def list_expenses():
 
-def delete_expense():
+# def expense_summary():
+
+def delete_expense(id: int):
+    expenses = load_expenses()
+    for expense in expenses:
+        if expense["ID"] == id:
+            expenses.remove(expense)
+            break
+    else:
+        print(f"Expense entry not found (ID: {id})")
+        return
+    save_expense(expenses)
+    print(f"Expense deleted successfully (ID: {id})")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Expense Tracker")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # add subcommand
+    add_parser = subparsers.add_parser("add")
+    add_parser.add_argument("--description", type=str, required=True)
+    add_parser.add_argument("--amount", type=int, required=True)
+
+    # update subcommand
+    update_parser = subparsers.add_parser("update")
+    update_parser.add_argument("--id", type=int, required=True)
+    update_parser.add_argument("--description", type=str, required=False)
+    update_parser.add_argument("--amount", type=int, required=False)
+
+    # delete subcommand
+    delete_parser = subparsers.add_parser("delete")
+    delete_parser.add_argument("--id", type=int, required=True)
+
+    # parse
+    args = parser.parse_args()
+    if args.command == "add":
+        add_expense(args.description, args.amount)
+    elif args.command == "update":
+        update_expense(args.id, args.description, args.amount)
+    elif args.command == "delete":
+        delete_expense(args.id)
