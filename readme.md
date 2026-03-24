@@ -50,9 +50,6 @@ python expense_tracker.py list
 # View summary for a specific month (March)
 python expense_tracker.py summary --month 3
 
-# Set a budget
-python expense_tracker.py set-budget --amount 1000
-
 # Export data
 python expense_tracker.py export-to-csv --name my_finances.csv
 ```
